@@ -10,3 +10,4 @@ Java must be easy
   - Snakenza
 
 - ### dsa - DSA in Java
+  - [Custom Trie Data Structure](./DSA//Trie//MyTrie.java)
