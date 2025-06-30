@@ -1,21 +1,28 @@
+// javac DSA/Trie/MyTrie.java
+// java DSA/Trie/MyTrie
 package DSA.Trie;
 
 public class MyTrie {
-    static class Node{
+    private static class Node{
         Node[] children;
         boolean eow;
 
         // Constructor
-        public Node(){
+        Node(){
             children = new Node[26];
             eow = false;
         }
     }
 
-    static Node root = new Node();
+    @SuppressWarnings("FieldMayBeFinal")
+    private Node root;
+    
+    public MyTrie(){
+        this.root = new Node();
+    }
 
-    public static void insert(String word){
-        Node current = root;
+    public void insert(String word){
+        Node current = this.root;
         for(int i = 0 ; i < word.length() ; i++){
             int idx = word.charAt(i) - 'a';
 
@@ -27,8 +34,8 @@ public class MyTrie {
         }
     }
 
-    public static boolean search(String key){
-        Node current = root;
+    public boolean search(String key){
+        Node current = this.root;
         for(int i = 0 ; i < key.length() ; i++){
             int idx = key.charAt(i) - 'a';
 
@@ -41,7 +48,7 @@ public class MyTrie {
         return true;
     }
     
-    public static boolean wordBreak(String key){
+    public boolean wordBreak(String key){
         if(key.length() == 0)
             return true;
         
@@ -55,13 +62,37 @@ public class MyTrie {
 
         return false;
     }
-    public static void main(String[] args) {
-        String[] words = {"the", "a", "there", "answer", "any", "by", "bye", "their"};
-        for(String w: words)
-            insert(w);
+    
+    public boolean startsWith(String prefix){
+        Node current = this.root;
 
-        //  System.out.println(search("the")); // true
-        // System.out.println( wordBreak("theanswerbyed") ); // false
-        // System.out.println( wordBreak("theanswerbye") ); // true
+        for(int i = 0 ; i < prefix.length() ; i++){
+            int idx = prefix.charAt(i) - 'a';
+            if(current.children[idx] == null)
+                return false;
+            current = current.children[idx];
+        }
+        return true;
     }
+
+    private int countNodes(Node current){
+        int count = 0;
+        for(int i=0;i<26;i++)
+            if(current.children[i] != null)
+                count += countNodes(current.children[i]);
+        
+        // +1 for current node of recursive call
+        return count+1; 
+    }
+    
+    public int uniqueSubstring(String key){
+        //TODO 1. Calculate all suffix
+        //TODO 2. Create Trie for all suffix
+        for(int i=0 ; i < key.length() ; i++){
+            this.insert(key.substring(i));
+        }
+        return countNodes(this.root);
+    }
+
 }
+
