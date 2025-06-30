@@ -2,6 +2,7 @@
 // java DSA/Trie/MyTrie
 package DSA.Trie;
 
+// Learning credit: ApnaCollege
 public class MyTrie {
     private static class Node{
         Node[] children;
@@ -14,8 +15,7 @@ public class MyTrie {
         }
     }
 
-    @SuppressWarnings("FieldMayBeFinal")
-    private Node root;
+    private final Node root;
     
     public MyTrie(){
         this.root = new Node();
@@ -75,6 +75,7 @@ public class MyTrie {
         return true;
     }
 
+    //! recursive
     private int countNodes(Node current){
         int count = 0;
         for(int i=0;i<26;i++)
@@ -92,6 +93,31 @@ public class MyTrie {
             this.insert(key.substring(i));
         }
         return countNodes(this.root);
+    }
+
+    //! recursive
+    private String longestWordWithAllPrefixCheck(Node current, String ans, StringBuilder temp){
+        //? base case when trie is empty
+        if(current == null) 
+            return ""; 
+        
+        for(int i = 0 ; i < 26 ; i++){
+            if(current.children[i] != null && current.children[i].eow == true){
+                temp.append((char)(i + 'a'));
+                
+                if(temp.length() > ans.length())
+                    ans = temp.toString();
+                
+                ans = longestWordWithAllPrefixCheck(current.children[i], ans, temp);
+                
+                //? delete for proper backtracking
+                temp.deleteCharAt(temp.length()-1);
+            }
+        }
+        return ans;
+    }
+    public String longestWordWithAllPrefix(){
+        return longestWordWithAllPrefixCheck(this.root, new String(), new StringBuilder());
     }
 
 }
